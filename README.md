@@ -15,5 +15,5 @@ To-Do:
 1. Make changes in index.html - caab-app\src\index.html (For Frontend)
 2. Make the contract better and more robust by adding the modifiers and events
 3. Add new functions in ERC-1155 contract to include batch transfer and a function to mint ERC-1155 as well for the same.
-4. Update the abi file - caab-contract\contracts\*
+4. Update the abi file - caab-contract\contracts\* (Initial Change Done - if contract is updated, the abis need to be updated)
 5. Update the app.js - caab-app\src\js\app.js
