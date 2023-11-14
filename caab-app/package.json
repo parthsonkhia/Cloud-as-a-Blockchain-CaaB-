@@ -1,0 +1,12 @@
+{
+  "name": "caab-app",
+  "version": "1.0.0",
+  "description": "Cloud-as-a-Blockchain Application (Frontend of the Blockchain application). The contracts are in a different folder named as caab-contract.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Parth Sonkhia",
+  "license": "ISC"
+}

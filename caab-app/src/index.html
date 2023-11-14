@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Pick your Favorite</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link href="css/toastr.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          CSE 4/526 Ballot Dapp
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        </div>
+        <button
+          class="btn btn-light"
+          type="submit"
+        >
+          Connect to MetaMask
+        </button>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="text-center p-4">
+        <h1>Ballot Dapp</h1>  
+        <hr>    
+      </div>
+      <div class="text-center p-2">
+        <h3>Pick your Favorite</h3>      
+      </div>
+
+      <div id="proposalsRow" class="row">
+      </div>
+      <hr>
+      <div class="text-left p-2">
+        <h5 id="currentUserAddress"></h5>      
+      </div>
+      <hr>
+      <br/>
+      <!-- <div class="input-group mb-3 w-50">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">Address</label>
+        </div>
+        <select class="custom-select" id="enter_address" value="">
+        </select>
+      </div> -->
+      <div class="row">
+        <div class="col-sm">
+          <div class="text-left">
+            <button class="btn btn-primary text-right" type="submit" id="register">Register</button>
+          </div>
+        </div>
+        <div class="col-sm">
+          <div class="text-right">
+            <button class="btn btn-success text-right" type="submit" id="win-count">Declare Winner</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div id="proposalTemplate" style="display: none;">
+      <div class="col-sm">
+        <div class="card text-center" style="width: min-content;">
+          <img class="card-img-top" src="" alt="Card image cap" style="width: 230px; height: 280px;">
+          <div class="card-body">
+            <h5 class="card-title"></h5>            
+          </div>
+          <button class="btn btn-primary btn-vote" type="submit" data-id="0">Vote</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.37/dist/web3.min.js"></script>
+    <script src="js/dist/toastr.min.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
