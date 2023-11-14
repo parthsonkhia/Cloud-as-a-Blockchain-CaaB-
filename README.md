@@ -8,3 +8,12 @@ This application have 3 folder structures :-
 1. caab-app :- This contains the frontend node.js code
 2. caab-contract :- This contains the contracts (ERC-20, ERC-721, ERC-1155)
 3. Reports :- This contains the Phase reports
+
+
+To-Do:
+
+1. Make changes in index.html - caab-app\src\index.html (For Frontend)
+2. Make the contract better and more robust by adding the modifiers and events
+3. Add new functions in ERC-1155 contract to include batch transfer and a function to mint ERC-1155 as well for the same.
+4. Update the abi file - caab-contract\contracts\*
+5. Update the app.js - caab-app\src\js\app.js
