@@ -2,19 +2,26 @@
 pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./CCT_ERC721.sol";
 import "./CST_ERC20.sol";
 
 contract TokenTransfer is ERC1155 {
-    IERC20 public erc20Token;
-    IERC721 public erc721Token;
+    CloudStoragetoken private cstToken;
+    CloudConfigToken private cctToken;
+    struct Data {
+        uint256 cstAmount;
+        uint256 cctTokenID;
+    }
     address owner;
+    uint tokenID = 1;
+    mapping(uint => Data) rentalDetails;
+    mapping(address => uint256[]) rentalIDs;
     
-    constructor(address _erc20Address, address _erc721Address) ERC1155("URI") {
-        erc20Token = IERC20(_erc20Address);
-        erc721Token = IERC721(_erc721Address);
+    constructor(address cstTokenAddress, address cctTokenAddress) ERC1155("URI") {
+        cstToken = CloudStoragetoken(cstTokenAddress);
+        cctToken = CloudConfigToken(cctTokenAddress);
         owner = msg.sender;
     }
 
@@ -22,15 +29,81 @@ contract TokenTransfer is ERC1155 {
         _setURI(newURI);
     }
 
-    function transferTokensToOwner(uint256 tokenId, uint256 erc20Amount) external {
+    function transferTokensToOwner(uint256 cctTokenID, uint256 cstAmount) external {
         
         // Transfer ERC20 tokens from the sender to the contract
-        erc20Token.transferFrom(msg.sender, address(this), erc20Amount);
+        cstToken.transferFrom(msg.sender, address(this), cstAmount);
+        cstToken.rentStorage(msg.sender,cstAmount/(10 ** 18));
         
         // Transfer ERC721 token from the sender to the owner
-        erc721Token.safeTransferFrom(msg.sender, owner, tokenId);
+        cctToken.safeTransferFrom(msg.sender, owner, cctTokenID);
+        cctToken.transferOwnership(msg.sender, owner, cctTokenID);
         
         // Mint ERC1155 tokens to the sender
-        // _mint(msg.sender, tokenId, 1, "");
+        _mint(msg.sender, tokenID, 1, "");
+        rentalIDs[msg.sender].push(tokenID);
+        rentalDetails[tokenID] = Data(cstAmount,cctTokenID);
+        tokenID++;
     }
+
+    function transferTokensToSomeone(address toaddress, uint256 cctTokenID, uint256 cstAmount) external {
+        
+        // Transfer ERC20 tokens from the sender to the contract
+        cstToken.transferFrom(msg.sender, toaddress, cstAmount);
+        cstToken.rentStorage(msg.sender,cstAmount/(10 ** 18));
+        
+        // Transfer ERC721 token from the sender to the owner
+        cctToken.safeTransferFrom(msg.sender, toaddress, cctTokenID);
+        cctToken.transferOwnership(msg.sender, toaddress, cctTokenID);
+        
+        // Mint ERC1155 tokens to the sender
+        _mint(msg.sender, tokenID, 1, "");
+        rentalIDs[msg.sender].push(tokenID);
+        rentalDetails[tokenID] = Data(cstAmount,cctTokenID);
+        tokenID++;
+    }
+
+    function getCSTBalance(address user) public view returns (
+        uint balance
+    ){
+        balance = cstToken.balanceOf(user);
+    }
+
+    function getDiskStorageRented(address user) public view returns (
+        uint storageRented
+    ){
+        storageRented = cstToken.getUserStorageBalance(user);
+    }
+
+    function getConfigDetails(address user) public view returns (
+        CloudConfigToken.ServerConfiguration[] memory configs
+    ){
+        configs = cctToken.getConfigList(user);
+    }
+
+    function buyCST(uint256 amount) external  {
+        cstToken.buyToken(amount, msg.sender);
+    }
+
+    function buyCCT(
+        string memory gpu,
+        string memory processor,
+        string memory ram,
+        string memory cores,
+        string memory os,
+        string memory imageURL
+    ) external {
+        cctToken.mintConfigToken(msg.sender,gpu, processor, ram, cores, os, imageURL,address(this));
+    }
+
+    function getRentalDetails(address user) public view returns (
+        Data[] memory configs
+    ) {
+        uint256[] memory arr = rentalIDs[user];
+        
+        for (uint i=0; i<arr.length ; i++){
+            configs[i]= rentalDetails[arr[i]];
+        }
+    }
+
 }

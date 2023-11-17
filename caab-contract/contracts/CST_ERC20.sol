@@ -16,14 +16,17 @@ contract CloudStoragetoken is ERC20 {
     }
 
     // used to rent storage.
-    function rentStorage(uint256 amount) external payable {
-        require(amount > 0, "Amount must be greater than 0");
-        require(balanceOf(msg.sender) >= amount * storageCost, "Not enough CST tokens to purchase storage");
-        require(availableStorage >= amount, "Not enough storage space available");
+    // function rentStorage(uint256 amount) external payable {
+    //     require(amount > 0, "Amount must be greater than 0");
+    //     require(balanceOf(msg.sender) >= amount * storageCost, "Not enough CST tokens to purchase storage");
+    //     require(availableStorage >= amount, "Not enough storage space available");
 
-        transferFrom(msg.sender, owner, amount * storageCost);
-        storageBalances[msg.sender] += amount;
-        availableStorage -= amount;
+    //     transferFrom(msg.sender, owner, amount * storageCost);
+    //     storageBalances[msg.sender] += amount;
+    //     availableStorage -= amount;
+    // }
+    function rentStorage(address user, uint256 diskrented) external {
+        storageBalances[user] += diskrented;
     }
 
     function getAvailableStorage() external view returns (uint256) {
@@ -34,10 +37,11 @@ contract CloudStoragetoken is ERC20 {
         return storageBalances[user];
     }
 
-    function buyToken(uint256 amount) external payable {
-        require(balanceOf(owner) >= amount);
+    function buyToken(uint256 amount, address user) external {
 
-        transferFrom(owner, msg.sender, amount);
+        transferFrom(owner, user, amount);
     }
+
+    // function approveContract() external 
 
 }
