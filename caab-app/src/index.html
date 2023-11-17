@@ -19,7 +19,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
-          CSE 4/526 Ballot Dapp
+          Cloud as a Blockchain
         </a>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         </div>
@@ -32,20 +32,83 @@
       </div>
     </nav>
     <div class="container">
-      <div class="text-center p-4">
-        <h1>Ballot Dapp</h1>  
+      <!-- <div class="text-center p-4">
+        <h1>Cloud as a Blockchain</h1>  
         <hr>    
-      </div>
-      <div class="text-center p-2">
-        <h3>Pick your Favorite</h3>      
-      </div>
+      </div> -->
+      <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Welcome to Cloud as a Blockchain</h4>
+            <h6 class="text-muted card-subtitle mb-2">Built by Parth Sonkhia , Anuj Vadecha</h6>
+            <p class="card-text">Buy Cloud storage configurations representation using our tokens </p>
+            <h5 id="currentUserAddress"></h5>      
+            <strong>Your Balances</strong>
+            
+            <div class="card" style="padding-right: 0px;margin-right: 0px;width: 300px;"></div>
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Cloud Storage Token (CST)</h4>
+                        <p class="card-text">Cloud Storage Token  </p>
+                        <div class="container"><strong>Your Balance: 10 CST</strong></div>
+                        <button class="btn btn-primary" type="button">Retrieve Balance</button>
+                        <button class="btn btn-primary" type="button">Buy</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#buyCST">
+                          Buy CST
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Cloud Config Token (CCT)</h4>
+                        <p class="card-text">Buy Configuration for servers</p>
+                        <div class="container"><strong>Your Balance: 10 CCT</strong></div>
+                        <button class="btn btn-primary" type="button">Retrieve Balance</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#buyCCT">
+                          Buy CCT
+                        </button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Cloud as a Blockchain (CAB Token)</h4>
+                        <p class="card-text">Buy both storage and config together to save on transaction fee </p>
+                        <p class="card-text"><strong>Your Balance: 10 CAB</strong></p>
+                        <button class="btn btn-primary" type="button">Retrieve Balance</button><button class="btn btn-primary" type="button">Buy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <div class="container">
+          <strong>Your Cloud Configurations</strong>
+        
+          <ul class="nav nav-tabs">
+            <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab1">Storage</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab2">Configuration</a></li>
+            <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab3">All together</a></li>
+          </ul>
+        
+          <div class="tab-content">
+            <div id="tab1" class="tab-pane fade in active">
+              <h3>Storage Balances</h3>
+              <p>The users storage is: </p>
+            </div>
+            <div id="tab2" class="tab-pane fade">
+              <h3>Configuration Balances</h3>
+              <p>The users configuration balance is</p>
+            </div>
+            <div id="tab3" class="tab-pane fade">
+              <h3>Tab 3 Content</h3>
+              <p>This is the content of Tab 3.</p>
+            </div>
+          </div>
+        </div>
+    </div>
 
       <div id="proposalsRow" class="row">
       </div>
       <hr>
-      <div class="text-left p-2">
-        <h5 id="currentUserAddress"></h5>      
-      </div>
       <hr>
       <br/>
       <!-- <div class="input-group mb-3 w-50">
@@ -81,7 +144,46 @@
         </div>
       </div>
     </div>
+  </div>
+<!-- Modal -->
+<div class="modal fade" id="buyCST" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
     </div>
+  </div>
+
+</div>
+<div class="modal fade" id="buyCCT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.37/dist/web3.min.js"></script>
     <script src="js/dist/toastr.min.js"></script>
