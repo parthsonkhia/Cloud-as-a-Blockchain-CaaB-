@@ -59,7 +59,8 @@
                         <h4 class="card-title">Cloud Config Token (CCT)</h4>
                         <p class="card-text">Buy Configuration for servers</p>
                         <div class="container"><strong>Your Balance: <h5 id="currentCCTBalance"></h5></strong></div>
-                        <button class="btn btn-primary" type="button">Retrieve Balance</button>
+                        <div id="NFTS"></div>
+                        <button id="refreshNFTS" class="btn btn-primary" type="button">Refresh NFTS</button>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#buyCCT">
                           Buy CCT
                         </button>
@@ -162,8 +163,8 @@
           Buy CST Tokens
           <div class="form-group">
               Calls BuyToken for ERC20
-              <label for="quantity">Quantity:</label>
-              <input type="number" class="form-control" id="quantity" placeholder="Enter quantity" min="1" value="1">
+              <label for="cstquantity">Quantity:</label>
+              <input type="number" class="form-control" id="cstquantity" placeholder="Enter quantity" min="1" value="1">
           </div>
           <!-- Bootstrap Button -->
           <button id="buyCSTSubmit" type="button" class="btn btn-primary" >Buy CST</button>

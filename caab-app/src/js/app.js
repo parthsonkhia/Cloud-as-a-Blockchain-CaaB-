@@ -1,9 +1,7 @@
 App = {
   web3: null,
   contracts: {},
-  cstaddress: "0x03Bd3DC08CfB222581D41bd5f41d13ECfb1f24ad",
-  cctaddress: "", 
-  cabaddress: "",
+  cabaddress: "0x45aB6eD59Ff8cD6c2952A416aC4e481CE2c0F921",
   names: new Array(),
   url: "http://127.0.0.1:7545",
   chairPerson: null,
@@ -40,9 +38,9 @@ App = {
   },
 
   initContract: function () {
-    let CSTabidata = null;
-    let CSTabi = $.getJSON("../abis/CST_ERC20.json", function (data) {
+     $.getJSON("../abis/CAB_ERC1155.json", function (data) {
       App.contracts.CAB = new App.web3.eth.Contract(data, App.cabaddress, {});
+      console.log("CAB contract loaded");
       return App.bindEvents();
 
     });
@@ -71,6 +69,7 @@ App = {
     $(document).on("click", "#buyCCTSubmit", App.handleBuyCCT);
     $(document).on("click", "#rent", App.handleRent);
     $(document).on("click", "#refreshCloudBalances", App.handleRefreshCloudBalances);
+    $(document).on("click", "#refreshNFTS", App.handleRefreshNFTS);
   },
 
   populateAddress: async function () {
@@ -93,8 +92,11 @@ App = {
       });
   },
   handleCSTBalance: function () {
+    console.log("handleCSTBalance")
     var option = { from: App.handler };
-    App.contracts.CAB.methods.balanceOf(App.handler).call((error, balance) => {
+    App.contracts.CAB.methods.getCSTBalance(App.handler)
+        // .then((error,data)=>{console.log(data);})
+        .call((error, balance) => {
           if (!error) {
             document.getElementById("currentCSTBalance").innerText =
                 balance;
@@ -200,6 +202,10 @@ App = {
 
   handleBuyCST() {
     console.log("buy CST")
+    console.log(typeof(parseInt(document.getElementById('cstquantity').value)))
+    App.contracts.CAB.methods.buyCST(parseInt(document.getElementById('cstquantity').value)).call((error, data) => {
+      console.log(data);
+    });
   },
   handleBuyCCT() {
     console.log("buy CCT")
@@ -231,6 +237,12 @@ App = {
   },
   handleRefreshCloudBalances() {
     console.log("refresh cloud balances")
+  },
+  handleRefreshNFTS() {
+    console.log("refresh NFTs")
+    App.contracts.CAB.methods.getConfigDetails(App.handler).call((error, data) => {
+      console.log(data)
+    });
   }
 };
 
