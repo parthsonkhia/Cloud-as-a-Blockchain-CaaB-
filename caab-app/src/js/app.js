@@ -1,9 +1,9 @@
 App = {
   web3: null,
   contracts: {},
-  cabaddress: "0x45aB6eD59Ff8cD6c2952A416aC4e481CE2c0F921",
+  cabaddress: "0x64D10754E6fB4cCBD52276A6e54345b1757A7C0d",
   names: new Array(),
-  url: "http://127.0.0.1:7545",
+  url: "http://127.0.0.1:8545",
   chairPerson: null,
   currentAccount: null,
 
@@ -38,8 +38,9 @@ App = {
   },
 
   initContract: function () {
-     $.getJSON("../abis/CAB_ERC1155.json", function (data) {
-      App.contracts.CAB = new App.web3.eth.Contract(data, App.cabaddress, {});
+     $.getJSON("../abis/TokenTransfer.json", function (data) {
+       console.log(data)
+      App.contracts.CAB = new App.web3.eth.Contract(data.abi, App.cabaddress, {});
       console.log("CAB contract loaded");
       return App.bindEvents();
 
@@ -293,7 +294,24 @@ App = {
   },
   handleRefreshCloudBalances() {
     console.log("refresh cloud balances")
-  },
+    var option = { from: App.handler };
+    App.contracts.CAB.methods.getRentalDetails(App.handler).call()
+        .then((data) => {console.log(data)})
+
+        // .on("receipt", (receipt) => {
+      // toastr.success("Success! Address: " + App.handler + " has been registered.");
+      // console.log(receipt)
+    // }).on("error", (err) => {
+    //       toastr.error(App.getErrorMessage(err), "Reverted!");
+    //     });
+    App.contracts.CAB.methods.getDiskStorageRented(App.handler).send(option).on("receipt", (receipt) => {
+      toastr.success("Success! Address: " + App.handler + " has been registered.");
+      console.log(receipt)
+    }).on("error", (err) => {
+      toastr.error(App.getErrorMessage(err), "Reverted!");
+    });
+  }
+  ,
   handleRefreshNFTS() {
     console.log("refresh NFTs")
     App.contracts.CAB.methods.getConfigDetails(App.handler).call((error, data) => {
