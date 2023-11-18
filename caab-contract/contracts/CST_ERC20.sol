@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract CloudStoragetoken is ERC20 {
     uint256 public constant storageCost = 2 * 10**17; // Cost of 1GB data is 0.2 Token
-    uint256 public availableStorage = 50000;  // Total storage space in GB
+    uint256 public availableStorage = 5000000;  // Total storage space in GB
     address owner; // To store the address of the owner of the contract
 
     mapping(address => uint256) public storageBalances; // To keep track of resources rented by each user
@@ -26,7 +26,8 @@ contract CloudStoragetoken is ERC20 {
     //     availableStorage -= amount;
     // }
     function rentStorage(address user, uint256 diskrented) external {
-        storageBalances[user] += diskrented;
+        storageBalances[user] += (diskrented*5);
+        availableStorage -= (diskrented*5);
     }
 
     function getAvailableStorage() external view returns (uint256) {
@@ -41,6 +42,11 @@ contract CloudStoragetoken is ERC20 {
 
         // transferFrom(owner, user, amount);
         _transfer(owner, user, amount);
+    }
+
+    function transferCSTToken(address from, address to, uint256 value) external {
+
+        _transfer(from, to, value);
     }
 
     // function approveContract() external 
