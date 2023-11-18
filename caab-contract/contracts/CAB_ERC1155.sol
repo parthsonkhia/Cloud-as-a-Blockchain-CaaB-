@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 // import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -32,8 +32,8 @@ contract TokenTransfer is ERC1155 {
     function transferTokensToOwner(uint256 cctTokenID, uint256 cstAmount) external {
         
         // Transfer ERC20 tokens from the sender to the contract
-        cstToken.transferFrom(msg.sender, address(this), cstAmount);
-        cstToken.rentStorage(msg.sender,cstAmount/(10 ** 18));
+        cstToken.transferCSTToken(msg.sender, owner, cstAmount*(10 ** 18));
+        cstToken.rentStorage(msg.sender,cstAmount);
         
         // Transfer ERC721 token from the sender to the owner
         // cctToken.safeTransferFrom(msg.sender, owner, cctTokenID);
@@ -50,8 +50,8 @@ contract TokenTransfer is ERC1155 {
     function transferTokensToSomeone(address toaddress, uint256 cctTokenID, uint256 cstAmount) external {
         
         // Transfer ERC20 tokens from the sender to the contract
-        cstToken.transferFrom(msg.sender, toaddress, cstAmount);
-        cstToken.rentStorage(msg.sender,cstAmount/(10 ** 18));
+        cstToken.transferCSTToken(msg.sender, toaddress, cstAmount*(10 ** 18));
+        cstToken.rentStorage(msg.sender,cstAmount);
         
         // Transfer ERC721 token from the sender to the owner
         cctToken.safeTransferFrom(msg.sender, toaddress, cctTokenID);
@@ -68,6 +68,7 @@ contract TokenTransfer is ERC1155 {
         uint balance
     ){
         balance = cstToken.balanceOf(user);
+        balance /= (10 ** 18);
     }
 
     function getDiskStorageRented(address user) public view returns (
@@ -77,13 +78,15 @@ contract TokenTransfer is ERC1155 {
     }
 
     function getConfigDetails(address user) public view returns (
-        CloudConfigToken.ServerConfiguration[] memory configs
+        CloudConfigToken.ServerConfiguration[] memory
     ){
+        CloudConfigToken.ServerConfiguration[] memory configs = new CloudConfigToken.ServerConfiguration[](5);
         configs = cctToken.getConfigList(user);
+        return configs;
     }
 
     function buyCST(uint256 amount) external  {
-        cstToken.buyToken(amount, msg.sender);
+        cstToken.buyToken(amount*(10 ** 18), msg.sender);
     }
 
     function buyCCT(
