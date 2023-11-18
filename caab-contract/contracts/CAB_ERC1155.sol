@@ -36,7 +36,8 @@ contract TokenTransfer is ERC1155 {
         cstToken.rentStorage(msg.sender,cstAmount/(10 ** 18));
         
         // Transfer ERC721 token from the sender to the owner
-        cctToken.safeTransferFrom(msg.sender, owner, cctTokenID);
+        // cctToken.safeTransferFrom(msg.sender, owner, cctTokenID);
+        cctToken.transferCCT(msg.sender,owner,cctTokenID);
         cctToken.transferOwnership(msg.sender, owner, cctTokenID);
         
         // Mint ERC1155 tokens to the sender

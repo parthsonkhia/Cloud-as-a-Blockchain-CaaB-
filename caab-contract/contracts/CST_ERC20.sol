@@ -15,7 +15,7 @@ contract CloudStoragetoken is ERC20 {
         _mint(msg.sender, value * 10 ** uint256(decimals()));
     }
 
-    // used to rent storage.
+    // used to rent storage.s
     // function rentStorage(uint256 amount) external payable {
     //     require(amount > 0, "Amount must be greater than 0");
     //     require(balanceOf(msg.sender) >= amount * storageCost, "Not enough CST tokens to purchase storage");
@@ -39,7 +39,8 @@ contract CloudStoragetoken is ERC20 {
 
     function buyToken(uint256 amount, address user) external {
 
-        transferFrom(owner, user, amount);
+        // transferFrom(owner, user, amount);
+        _transfer(owner, user, amount);
     }
 
     // function approveContract() external 
