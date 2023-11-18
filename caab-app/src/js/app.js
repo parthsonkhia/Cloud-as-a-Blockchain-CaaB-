@@ -67,7 +67,7 @@ App = {
     $(document).on("click", "#getCABBalance", App.handleCABBalance);
     $(document).on("click", "#buyCSTSubmit", App.handleBuyCST);
     $(document).on("click", "#buyCCTSubmit", App.handleBuyCCT);
-    $(document).on("click", "#rent", App.handleRent);
+    $(document).on("click", "#rentCAB", App.handleRent);
     $(document).on("click", "#refreshCloudBalances", App.handleRefreshCloudBalances);
     $(document).on("click", "#refreshNFTS", App.handleRefreshNFTS);
   },
@@ -203,9 +203,47 @@ App = {
   handleBuyCST() {
     console.log("buy CST")
     console.log(typeof(parseInt(document.getElementById('cstquantity').value)))
-    App.contracts.CAB.methods.buyCST(parseInt(document.getElementById('cstquantity').value)).call((error, data) => {
-      console.log(data);
-    });
+    var option = { from: App.handler };
+    App.contracts.CAB.methods.buyCST(parseInt(document.getElementById('cstquantity').value))
+        .send(option)
+        .on("receipt", (receipt) => {
+          toastr.success("Transaction Successful: " + App.handler + ".");
+        })
+        .on("error", (err) => {
+          toastr.error(App.getErrorMessage(err), "Reverted!");
+        });
+  },
+  createCard(data) {
+    var card = document.createElement('div');
+    card.className = 'col-md-4';
+
+    var cardContent = `
+              <div class="card">
+                  <div class="card-body">
+          `;
+
+    // Define attribute order
+    var attributesOrder = ['Token id', 'gpu', 'processor', 'ram', 'cores', 'os', 'imageUrl'];
+
+    // Populate card content
+    for (var i = 0; i < attributesOrder.length; i++) {
+      var attribute = attributesOrder[i];
+      var value = data[i];
+
+      if (attribute === 'imageUrl') {
+        cardContent = `<img src="${value}" class="card-img-top" alt="Image">`+ cardContent;
+      } else {
+        cardContent += `<p class="card-text">${attribute}: ${value}</p>`;
+      }
+    }
+
+    cardContent += `
+                  </div>
+              </div>
+          `;
+
+    card.innerHTML = cardContent;
+    return card;
   },
   handleBuyCCT() {
     console.log("buy CCT")
@@ -228,12 +266,30 @@ App = {
       os: os,
       image: image
     };
+    var option = { from: App.handler };
+    App.contracts.CAB.methods.buyCCT(...Object.values(formData))
+        .send(option)
+        .on("receipt", (receipt) => {
+          toastr.success("Transaction Successful: " + App.handler + ".");
+        })
+        .on("error", (err) => {
+          toastr.error(App.getErrorMessage(err), "Reverted!");
+        });
 
     // Log the form data to the console (you can do something else with it)
     console.log(formData);
   },
   handleRent() {
-    console.log("rent")
+    var option = { from: App.handler };
+    App.contracts.CAB.methods.transferTokensToOwner(
+        parseInt(document.getElementById('cctTokenID').value),
+        parseInt(document.getElementById('cstAmount').value)/5).send(option)
+        .on("receipt", (receipt) => {
+          toastr.success("Transaction Successful: " + App.handler + ".");
+        })
+        .on("error", (err) => {
+          toastr.error(App.getErrorMessage(err), "Reverted!");
+        });
   },
   handleRefreshCloudBalances() {
     console.log("refresh cloud balances")
@@ -242,6 +298,14 @@ App = {
     console.log("refresh NFTs")
     App.contracts.CAB.methods.getConfigDetails(App.handler).call((error, data) => {
       console.log(data)
+
+      var cardsContainer = document.getElementById('cards-container');
+      cardsContainer.innerHTML = '';
+      for (var i = 0; i < data.length; i++) {
+        var cardData = data[i];
+        var card = App.createCard(cardData);
+        cardsContainer.appendChild(card);
+      }
     });
   }
 };

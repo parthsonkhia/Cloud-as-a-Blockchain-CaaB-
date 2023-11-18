@@ -38,7 +38,28 @@
             <h4 class="card-title">Welcome to Cloud as a Blockchain</h4>
             <h6 class="text-muted card-subtitle mb-2">Built by Parth Sonkhia , Anuj Vadecha</h6>
             <p class="card-text">Buy Cloud storage configurations representation using our tokens </p>
-            <h5 id="currentUserAddress"></h5>      
+            <h5 id="currentUserAddress"></h5>
+            <!-- Modal -->
+            <div class="modal fade" id="cardsModal" tabindex="-1" role="dialog" aria-labelledby="cardsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cardsModalLabel">NFT Tokens Available</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row" id="cards-container"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <strong>Your Balances</strong>
             
             <div class="card" style="padding-right: 0px;margin-right: 0px;width: 300px;"></div>
@@ -58,9 +79,9 @@
                     <div class="card-body">
                         <h4 class="card-title">Cloud Config Token (CCT)</h4>
                         <p class="card-text">Buy Configuration for servers</p>
-                        <div class="container"><strong>Your Balance: <h5 id="currentCCTBalance"></h5></strong></div>
-                        <div id="NFTS"></div>
-                        <button id="refreshNFTS" class="btn btn-primary" type="button">Refresh NFTS</button>
+                        <div class="container"><strong>Your Balances will be shown above once refreshed <h5 id="currentCCTBalance"></h5></strong></div>
+
+                        <button id="refreshNFTS" class="btn btn-primary" type="button" data-toggle="modal" data-target="#cardsModal">Refresh NFTS</button>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#buyCCT">
                           Buy CCT
                         </button>
@@ -71,7 +92,7 @@
                         <h4 class="card-title">Cloud as a Blockchain (CAB Token)</h4>
                         <p class="card-text">Buy both storage and config together to save on transaction fee </p>
                         <p class="card-text"><strong>Your Balance: <h5 id="currentCABBalance"></h5></strong></p>
-                        <button class="btn btn-primary" type="button">Retrieve Balance</button>
+<!--                        <button class="btn btn-primary" type="button">Retrieve Balance</button>-->
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#rentCAB">
                             Rent
                         </button>
@@ -79,8 +100,8 @@
                 </div>
             </div>
         </div>
-            
-        <div class="container">
+
+          <div class="container">
           <strong>Your Cloud Configurations</strong>
             <button type="button" class="btn btn-primary">
                 Refresh
@@ -228,7 +249,7 @@
                   </div>
 
                   <!-- Submit Button -->
-                  <button id="buyCCTSubmit" type="submit" class="btn btn-primary">Buy CCT</button>
+                  <button id="buyCCTSubmit" type="button" class="btn btn-primary">Buy CCT</button>
               </form>
           </div>
           <!-- Bootstrap Button -->
@@ -251,14 +272,14 @@
                     <form>
                         <!-- Token ID Input -->
                         <div class="form-group">
-                            <label for="tokenId">Token ID for Server Config:</label>
-                            <input type="text" class="form-control" id="tokenId" placeholder="Enter Token ID">
+                            <label for="cctTokenID">Token ID for Server Config:</label>
+                            <input type="text"  class="form-control" id="cctTokenID" placeholder="Enter Token ID">
                         </div>
 
                         <!-- Storage Quantity Input -->
                         <div class="form-group">
-                            <label for="storageQuantity">Storage Quantity:</label>
-                            <input type="number" class="form-control" id="storageQuantity" placeholder="Enter Storage Quantity" min="1">
+                            <label for="cstAmount">Storage Quantity:</label>
+                            <input type="number" class="form-control" id="cstAmount" placeholder="Enter Storage Quantity" min="1">
                         </div>
 
                         <!-- Submit Button -->
