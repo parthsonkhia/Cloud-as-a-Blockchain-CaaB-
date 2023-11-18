@@ -181,6 +181,32 @@
 		"inputs": [
 			{
 				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "LogMessage",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256[]",
+				"name": "message",
+				"type": "uint256[]"
+			}
+		],
+		"name": "LogMessage1",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
 				"internalType": "uint256",
 				"name": "_tokenId",
 				"type": "uint256"
@@ -368,7 +394,7 @@
 					}
 				],
 				"internalType": "struct CloudConfigToken.ServerConfiguration[]",
-				"name": "configs",
+				"name": "",
 				"type": "tuple[]"
 			}
 		],
@@ -533,6 +559,55 @@
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "serverConfigs",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "gpu",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "processor",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "ram",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "cores",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "os",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "imageURL",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "operator",
 				"type": "address"
@@ -583,6 +658,30 @@
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenList",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
@@ -616,6 +715,29 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "transferCCT",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{

@@ -17,10 +17,13 @@ contract CloudConfigToken is ERC721URIStorage {
         string os;
         string imageURL;
     }
+    event LogMessage(string message);
+    event LogMessage1(uint256[] message);
 
-    mapping (uint256 => ServerConfiguration) private serverConfigs;
+
+    mapping (uint256 => ServerConfiguration) public serverConfigs;
     mapping (uint256 => uint256) public tokenToCost;
-    mapping (address => uint256[]) private tokenList;
+    mapping (address => uint256[]) public tokenList;
 
     constructor() ERC721("Cloud Config Token", "CCT") {
         owner = msg.sender;
@@ -82,13 +85,14 @@ contract CloudConfigToken is ERC721URIStorage {
     // }
 
     function getConfigList(address user) public view returns (
-        ServerConfiguration[] memory configs
+        ServerConfiguration[] memory
     ) {
         uint256[] memory arr = tokenList[user];
-        
-        for (uint i=0; i<arr.length ; i++){
+        ServerConfiguration[] memory configs = new ServerConfiguration[](arr.length);
+        for (uint256 i=0; i<arr.length ; i++){
             configs[i]= serverConfigs[arr[i]];
         }
+        return configs;
     }
 
     function remove(uint val, address user) internal{
@@ -108,6 +112,10 @@ contract CloudConfigToken is ERC721URIStorage {
     function transferOwnership(address from, address to, uint256 tokenId) public {
         remove(tokenId,from);
         tokenList[to].push(tokenId);
+    }
+
+    function transferCCT(address from, address to, uint256 tokenId) public {
+        _transfer(from, to, tokenId);
     }
     
 }
