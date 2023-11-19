@@ -1,7 +1,7 @@
 App = {
   web3: null,
   contracts: {},
-  cabaddress: "0x64D10754E6fB4cCBD52276A6e54345b1757A7C0d",
+  cabaddress: "0x7636b4264191e4e8a9Bf2Beb1F64A065CEdb4385",
   names: new Array(),
   url: "http://127.0.0.1:8545",
   chairPerson: null,
@@ -38,7 +38,7 @@ App = {
   },
 
   initContract: function () {
-     $.getJSON("../abis/TokenTransfer.json", function (data) {
+     $.getJSON("../abis/CloudAsABlockchainToken.json", function (data) {
        console.log(data)
       App.contracts.CAB = new App.web3.eth.Contract(data.abi, App.cabaddress, {});
       console.log("CAB contract loaded");
@@ -282,7 +282,7 @@ App = {
   },
   handleRent() {
     var option = { from: App.handler };
-    App.contracts.CAB.methods.transferTokensToOwner(
+    App.contracts.CAB.methods.rentCloudDiskandServer(
         parseInt(document.getElementById('cctTokenID').value),
         parseInt(document.getElementById('cstAmount').value)/5).send(option)
         .on("receipt", (receipt) => {
@@ -296,7 +296,23 @@ App = {
     console.log("refresh cloud balances")
     var option = { from: App.handler };
     App.contracts.CAB.methods.getRentalDetails(App.handler).call()
-        .then((data) => {console.log(data)})
+        .then((data) => {
+          console.log(data);
+          // var storagevar = document.getElementById("userstoragebalance");
+          // var storagerented = data[0].cstAmount*5;
+          // storagevar.textContent = storagerented;
+          var tableBody = document.querySelector("#myTable tbody");
+          tableBody.innerHTML = "";
+          for (let i = 0; i < data.length; i++) {
+            App.contracts.CAB.methods.getTokenDetails(data[i].cctTokenID).call()
+              .then((data1) => {
+                console.log(data1);
+                var row = tableBody.insertRow();
+                row.innerHTML = "<td>" + (i+1) + "</td><td>" + (data[i].cstAmount*5) + "GB</td><td>" + data1.gpu + "</td><td>" + data1.processor + "</td><td>" + data1.ram + "</td><td>" + data1.cores + "</td><td>" + data1.os + "</td>";
+              });
+          }
+        })
+
 
         // .on("receipt", (receipt) => {
       // toastr.success("Success! Address: " + App.handler + " has been registered.");
@@ -304,12 +320,12 @@ App = {
     // }).on("error", (err) => {
     //       toastr.error(App.getErrorMessage(err), "Reverted!");
     //     });
-    App.contracts.CAB.methods.getDiskStorageRented(App.handler).send(option).on("receipt", (receipt) => {
-      toastr.success("Success! Address: " + App.handler + " has been registered.");
-      console.log(receipt)
-    }).on("error", (err) => {
-      toastr.error(App.getErrorMessage(err), "Reverted!");
-    });
+    // App.contracts.CAB.methods.getDiskStorageRented(App.handler).send(option).on("receipt", (receipt) => {
+    //   toastr.success("Success! Address: " + App.handler + " has been registered.");
+    //   console.log(receipt)
+    // }).on("error", (err) => {
+    //   toastr.error(App.getErrorMessage(err), "Reverted!");
+    // });
   }
   ,
   handleRefreshNFTS() {

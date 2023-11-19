@@ -91,7 +91,7 @@
                     <div class="card-body">
                         <h4 class="card-title">Cloud as a Blockchain (CAB Token)</h4>
                         <p class="card-text">Buy both storage and config together to save on transaction fee </p>
-                        <p class="card-text"><strong>Your Balance: <h5 id="currentCABBalance"></h5></strong></p>
+                        <!-- <p class="card-text"><strong>Your Balance: <h5 id="currentCABBalance"></h5></strong></p> -->
 <!--                        <button class="btn btn-primary" type="button">Retrieve Balance</button>-->
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#rentCAB">
                             Rent
@@ -115,7 +115,7 @@
           <div class="tab-content">
             <div id="tab1" class="tab-pane fade in active">
               <h3>Storage Balances</h3>
-              <p>The users storage is: </p>
+              <p>The users storage is: <span id="userstoragebalance">0</span>GB</p>
                 <p>Calls getUserStorageBalance in ERC 20</p>
             </div>
             <div id="tab2" class="tab-pane fade">
@@ -124,8 +124,23 @@
                 <p>getConfigList(address) - ERC721 get list of nft owned and the corresponding config data</p>
             </div>
             <div id="tab3" class="tab-pane fade">
-              <h3>Tab 3 Content</h3>
-              <p>This is the content of Tab 3.</p>
+              <table class="table table-bordered" id="myTable">
+                <thead>
+                    <!-- Your existing table header -->
+                    <tr>
+                        <th>Serial</th>
+                        <th>Storage</th>
+                        <th>GPU</th>
+                        <th>Processor</th>
+                        <th>RAM</th>
+                        <th>Cores</th>
+                        <th>Operating System</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table body will be dynamically added here -->
+                </tbody>
+            </table>
             </div>
           </div>
         </div>
@@ -283,7 +298,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <button id="rent" type="submit" class="btn btn-primary">Submit</button>
+                        <button id="rent" type="button" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 var CST_ERC20 = artifacts.require("CloudStoragetoken");
 var CCT_ERC721 = artifacts.require("CloudConfigToken");
-var CAB_ERC1155 = artifacts.require("TokenTransfer");
+var CAB_ERC1155 = artifacts.require("CloudAsABlockchainToken");
 
 // module.exports = function(deployer) {
 //     deployer.deploy(CST_ERC20,1000000).then(() => {

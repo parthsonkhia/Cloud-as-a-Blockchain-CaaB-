@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
@@ -17,31 +17,35 @@ contract CloudConfigToken is ERC721URIStorage {
         string os;
         string imageURL;
     }
-    event LogMessage(string message);
-    event LogMessage1(uint256[] message);
-
 
     mapping (uint256 => ServerConfiguration) public serverConfigs;
     mapping (uint256 => uint256) public tokenToCost;
     mapping (address => uint256[]) public tokenList;
+
+    event NFTminted(string message);
+    event NFTOwnershipTransferred(string message);
+
+    modifier userNotCaller (address user, address functionCaller) {
+        require(
+          user!=functionCaller,
+          "The user should be the caller of mintConfigToken function. It should be called by the owner or the ERC1155 contract!"
+        );
+        _;
+    }
 
     constructor() ERC721("Cloud Config Token", "CCT") {
         owner = msg.sender;
     }
 
     function mintConfigToken(
-        // address owner,
-        // uint256 tokenID,
-        // string memory tURI,
         address user,
         string memory gpu,
         string memory processor,
         string memory ram,
         string memory cores,
         string memory os,
-        string memory imageURL,
-        address operator
-    ) external {
+        string memory imageURL
+    ) external userNotCaller(user,msg.sender) {
         _mint(user, tokenID);
         _setTokenURI(tokenID, "");
 
@@ -49,26 +53,14 @@ contract CloudConfigToken is ERC721URIStorage {
         tokenToCost[tokenID] = 1;
         tokenList[user].push(tokenID);
         tokenID++;
-        setApprovalForAll(operator, true);
+        // setApprovalForAll(operator, true);
+        emit NFTminted("Minted NFT successfully for the user.");
     }
 
     function getConfigData(uint256 tokenId) public view returns (
-        uint256 id,
-        string memory gpu,
-        string memory processor,
-        string memory ram,
-        string memory cores,
-        string memory os,
-        string memory imageURL
+        ServerConfiguration memory config
     ) {
-        ServerConfiguration memory config = serverConfigs[tokenId];
-        id = config.id;
-        gpu = config.gpu;
-        processor = config.processor;
-        ram = config.ram;
-        cores = config.cores;
-        os = config.os;
-        imageURL = config.imageURL;
+        config = serverConfigs[tokenId];
     }
 
     // function buyServerConfig(uint256 tokenId) external payable {
@@ -112,6 +104,7 @@ contract CloudConfigToken is ERC721URIStorage {
     function transferOwnership(address from, address to, uint256 tokenId) public {
         remove(tokenId,from);
         tokenList[to].push(tokenId);
+        emit NFTOwnershipTransferred("The ownership transfer of the NFT is successful");
     }
 
     function transferCCT(address from, address to, uint256 tokenId) public {
