@@ -1,26 +1,14 @@
 App = {
   web3: null,
   contracts: {},
-  cabaddress: "0x7636b4264191e4e8a9Bf2Beb1F64A065CEdb4385",
+  cabaddress: "0x78542f1690ee51F60eB7E0425C9075A4Be54d0f2",
   names: new Array(),
   url: "http://127.0.0.1:8545",
   chairPerson: null,
   currentAccount: null,
 
   init: function () {
-    // $.getJSON("../proposals.json", function (data) {
-    //   var proposalsRow = $("#proposalsRow");
-    //   var proposalTemplate = $("#proposalTemplate");
-    //
-    //   for (i = 0; i < data.length; i++) {
-    //     proposalTemplate.find(".card-title").text(data[i].name);
-    //     proposalTemplate.find("img").attr("src", data[i].picture);
-    //     proposalTemplate.find(".btn-vote").attr("data-id", data[i].id);
-    //
-    //     proposalsRow.append(proposalTemplate.html());
-    //     App.names.push(data[i].name);
-    //   }
-    // });
+
     return App.initWeb3();
   },
 
@@ -45,32 +33,26 @@ App = {
       return App.bindEvents();
 
     });
-    // console.log(CSTabidata);
-    // const CCTabi = $.getJSON("../abis/CCT_ERC721.json", function (data) {return data;});
-    // const CABabi = $.getJSON("../abis/CAB_ERC1155.json", function (data) {return data;});
-    // const CSTabi = require('../abis/CST_ERC20.json');
-    // const CCTabi = require('../abis/CCT_ERC721.json');
-    // const CABabi = require('../abis/CAB_ERC1155.json');
-
-    // console.log(CSTabidata);
-    // App.contracts.Ballot = new App.web3.eth.Contract(App.abi, App.address, {});
-    // App.contracts.CCT = new App.web3.eth.Contract(App.cctabi, App.cctaddress, {});
-    // App.contracts.CAB = new App.web3.eth.Contract(App.cababi, App.cabaddress, {});
-    // return App.bindEvents();
   },
 
   bindEvents: function () {
-    $(document).on("click", ".btn-vote", App.handleVote);
-    $(document).on("click", "#win-count", App.handleWinner);
-    $(document).on("click", "#register", App.handleRegister);
+    // $(document).on("click", ".btn-vote", App.handleVote);
+    // $(document).on("click", "#win-count", App.handleWinner);
+    // $(document).on("click", "#register", App.handleRegister);
     $(document).on("click", "#getCSTBalance", App.handleCSTBalance);
     $(document).on("click", "#getCCTBalance", App.handleCCTBalance);
     $(document).on("click", "#getCABBalance", App.handleCABBalance);
     $(document).on("click", "#buyCSTSubmit", App.handleBuyCST);
     $(document).on("click", "#buyCCTSubmit", App.handleBuyCCT);
-    $(document).on("click", "#rentCAB", App.handleRent);
+    $(document).on("click", "#rentCABSubmit", App.handleRent);
     $(document).on("click", "#refreshCloudBalances", App.handleRefreshCloudBalances);
     $(document).on("click", "#refreshNFTS", App.handleRefreshNFTS);
+    // App.contracts.CAB.events.NFTminted()
+    //     .on('data', (event) => {
+    //       console.log('Event data:', event.returnValues);
+    //       // Handle the event data here
+    //     })
+    //     .on('error', console.error);
   },
 
   populateAddress: async function () {
@@ -80,18 +62,7 @@ App = {
           "Current User Address: " + App.handler;
   },
 
-  handleRegister: function () {
-    var option = { from: App.handler };
-    App.contracts.Ballot.methods
-      .register()
-      .send(option)
-      .on("receipt", (receipt) => {
-        toastr.success("Success! Address: " + App.handler + " has been registered.");
-      })
-      .on("error", (err) => {
-        toastr.error(App.getErrorMessage(err), "Reverted!");
-      });
-  },
+
   handleCSTBalance: function () {
     console.log("handleCSTBalance")
     var option = { from: App.handler };
@@ -135,76 +106,12 @@ App = {
       }}
     );
   },
-  handleVote: function (event) {
-    event.preventDefault();
-    var proposalId = parseInt($(event.target).data("id"));
-
-    var option = { from: App.handler };
-    App.contracts.Ballot.methods
-      .vote(proposalId)
-      .send(option)
-      .on("receipt", (receipt) => {
-        toastr.success("Success! Vote has been casted.");
-      })
-      .on("error", (err) => {
-        toastr.error(App.getErrorMessage(err), "Reverted!");
-      });
-  },
-
-  handleWinner: function () {
-    App.contracts.Ballot.methods
-      .reqWinner()
-      .call()
-      .then((winner) => {
-        toastr.success(App.names[winner] + " is the winner!");
-      })
-      .catch((err) => {
-        toastr.error(
-          "A proposal must have greater than 2 votes to be declared as winner.",
-          "Error insufficient votes!"
-        );
-      });
-  },
-
-  getErrorMessage: function (error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    let errorReason = "";
-
-    if (errorCode === 4001) {
-      return "User rejected the request!";
-    } else if (
-      errorMessage.includes("Access Denied: user is not the chairperson!")
-    ) {
-      return "Access Denied: user is not the chairperson!";
-    } else if (errorMessage.includes("Access Denied: Not a Registered Voter")) {
-      return "Access Denied: Not a Registered Voter!";
-    } else if (
-      errorMessage.includes("Vote Denied: This user has already casted a vote!")
-    ) {
-      return "Vote Denied: This user has already casted a vote!";
-    } else if (
-      errorMessage.includes(
-        "Invalid Vote: The vote proposal entered is invalid!"
-      )
-    ) {
-      return "Invalid Vote: The vote proposal entered is invalid!";
-    } 
-    else if (
-      errorMessage.includes(
-        "Access Denied: User has been registered already!"
-      )
-    ) {
-      return "Access Denied: User has been registered already!";
-    }else {
-      return "Unexpected Error!";
-    }
-  },
 
   handleBuyCST() {
     console.log("buy CST")
     console.log(typeof(parseInt(document.getElementById('cstquantity').value)))
     var option = { from: App.handler };
+    try{
     App.contracts.CAB.methods.buyCST(parseInt(document.getElementById('cstquantity').value))
         .send(option)
         .on("receipt", (receipt) => {
@@ -212,7 +119,14 @@ App = {
         })
         .on("error", (err) => {
           toastr.error(App.getErrorMessage(err), "Reverted!");
-        });
+        }).then((result) => {
+      // This block will be executed after the transaction is successful
+      toastr.success("Transaction Successful for: " + App.handler + ".");
+    });
+
+    }catch(err){
+      toastr.error(App.getErrorMessage(err), "Reverted!");
+    }
   },
   createCard(data) {
     var card = document.createElement('div');
@@ -271,10 +185,12 @@ App = {
     App.contracts.CAB.methods.buyCCT(...Object.values(formData))
         .send(option)
         .on("receipt", (receipt) => {
+          console.log(receipt)
           toastr.success("Transaction Successful: " + App.handler + ".");
         })
         .on("error", (err) => {
-          toastr.error(App.getErrorMessage(err), "Reverted!");
+          console.log(err)
+          toastr.error(err, "Reverted!");
         });
 
     // Log the form data to the console (you can do something else with it)
@@ -289,7 +205,8 @@ App = {
           toastr.success("Transaction Successful: " + App.handler + ".");
         })
         .on("error", (err) => {
-          toastr.error(App.getErrorMessage(err), "Reverted!");
+          console.log(err)
+          toastr.error(err, "Reverted!");
         });
   },
   handleRefreshCloudBalances() {

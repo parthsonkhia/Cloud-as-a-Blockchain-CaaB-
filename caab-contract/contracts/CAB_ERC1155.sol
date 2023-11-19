@@ -121,7 +121,15 @@ contract CloudAsABlockchainToken is ERC1155 {
     function buyCST(uint256 amount) external  {
         cstToken.buyToken(amount*(10 ** 18), msg.sender);
     }
-
+    event PurchaseReceipt(
+        address indexed buyer,
+        string gpu,
+        string processor,
+        string ram,
+        string cores,
+        string os,
+        string imageURL
+    );
     function buyCCT(
         string memory gpu,
         string memory processor,
@@ -131,6 +139,15 @@ contract CloudAsABlockchainToken is ERC1155 {
         string memory imageURL
     ) external {
         cctToken.mintConfigToken(msg.sender,gpu, processor, ram, cores, os, imageURL);
+        emit PurchaseReceipt(
+            msg.sender,
+            gpu,
+            processor,
+            ram,
+            cores,
+            os,
+            imageURL
+        );
     }
 
     function getRentalDetails(address user) public view returns (
