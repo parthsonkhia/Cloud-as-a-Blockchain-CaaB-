@@ -130,6 +130,7 @@ contract CloudAsABlockchainToken is ERC1155 {
         string os,
         string imageURL
     );
+
     function buyCCT(
         string memory gpu,
         string memory processor,

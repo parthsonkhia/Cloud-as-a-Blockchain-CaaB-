@@ -22,6 +22,7 @@ App = {
     ethereum.request({ method: "eth_requestAccounts" });
 
     App.populateAddress();
+
     return App.initContract();
   },
 
@@ -30,9 +31,19 @@ App = {
        console.log(data)
       App.contracts.CAB = new App.web3.eth.Contract(data.abi, App.cabaddress, {});
       console.log("CAB contract loaded");
+      App.listenToEvents();
       return App.bindEvents();
 
     });
+
+  },
+  listenToEvents: function () {
+    App.contracts.CAB.events.PurchaseReceipt()
+        .on('data', event => toastr.success("Event emitted " +event.returnValues[0] + " bought " + event.returnValues[1]) )
+        .on('changed', changed => console.log(changed))
+        .on('error', err => console.log(err))
+        .on('connected', str => console.log(str))
+    App.contracts.CAB.events.rentalSuccess().on('data', event => toastr.success("Event emitted " +event.returnValues[0]))
   },
 
   bindEvents: function () {
@@ -121,7 +132,7 @@ App = {
           toastr.error(App.getErrorMessage(err), "Reverted!");
         }).then((result) => {
       // This block will be executed after the transaction is successful
-      toastr.success("Transaction Successful for: " + App.handler + ".");
+      // toastr.success("Transaction Successful for: " + App.handler + ".");
     });
 
     }catch(err){
@@ -191,6 +202,8 @@ App = {
         .on("error", (err) => {
           console.log(err)
           toastr.error(err, "Reverted!");
+        }).then((result) => {
+          toastr.success("Transaction Successful for: " + App.handler + ".");
         });
 
     // Log the form data to the console (you can do something else with it)
