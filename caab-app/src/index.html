@@ -221,24 +221,68 @@
       <div class="modal-body">
           Buy CCT Tokens
           <div class="form-group">
-              Calls mintConfigToken
               <form id="buyCCTForm">
                   <!-- GPU Input -->
                   <div class="form-group">
-                      <label for="gpu">GPU:</label>
-                      <input type="text" class="form-control" id="gpu" placeholder="Enter GPU">
-                  </div>
+                    <label for="gpu">GPU:</label>
+                    <select class="form-control" id="gpu" name="gpu">
+                        <option value="" disabled selected>Select GPU</option>
+                        <option value="RTX4090">RTX4090</option>
+                        <option value="RTX4080">RTX4080</option>
+                        <option value="RTX4070">RTX4070</option>
+                        <option value="RTX4070 Ti">RTX4070 Ti</option>
+                        <option value="RTX4060">RTX4060</option>
+                        <option value="RTX4060 Ti">RTX4060 Ti</option>
+                        <option value="RTX3090 Ti">RTX3090 Ti</option>
+                        <option value="RTX3090">RTX3090</option>
+                        <option value="RTX3080 Ti">RTX3080 Ti</option>
+                        <option value="RTX3080">RTX3080</option>
+                        <option value="RTX3070 Ti">RTX3070 Ti</option>
+                        <option value="RTX3070">RTX3070</option>
+                        <option value="RTX3060 Ti">RTX3060 Ti</option>
+                        <option value="RTX3060">RTX3060</option>
+                        <option value="RTX3050">RTX3050</option>
+                        <option value="RTX2080 Ti">RTX2080 Ti</option>
+                        <option value="RTX2080 Super">RTX2080 Super</option>
+                        <option value="RTX2080">RTX2080</option>
+                        <option value="RTX2070 Super">RTX2070 Super</option>
+                        <option value="RTX2070">RTX2070</option>
+                        <option value="RTX2060 Super">RTX2060 Super</option>
+                        <option value="RTX2060">RTX2060</option>
+                    </select>
+                </div>                
 
                   <!-- Processor Input -->
                   <div class="form-group">
-                      <label for="processor">Processor:</label>
-                      <input type="text" class="form-control" id="processor" placeholder="Enter processor">
-                  </div>
+                    <label for="processor">Processor:</label>
+                    <select class="form-control" id="processor" name="processor">
+                        <option value="" disabled selected>Select Processor</option>
+                        <option value="i9 vPro">i9 vPro</option>
+                        <option value="i9-13th Gen">i9-13th Gen</option>
+                        <option value="i9-12th Gen">i9-12th Gen</option>
+                        <option value="i9-11th Gen">i9-11th Gen</option>
+                        <option value="i9-10th Gen">i9-10th Gen</option>
+                        <option value="i7 vPro">i7 vPro</option>
+                        <option value="i7-13th Gen">i7-13th Gen</option>
+                        <option value="i7-12th Gen">i7-12th Gen</option>
+                        <option value="i7-11th Gen">i7-11th Gen</option>
+                        <option value="i7-10th Gen">i7-10th Gen</option>
+                        <option value="i5 vPro">i5 vPro</option>
+                        <option value="i5-13th Gen">i5-13th Gen</option>
+                        <option value="i5-12th Gen">i5-12th Gen</option>
+                        <option value="i5-11th Gen">i5-11th Gen</option>
+                        <option value="i5-10th Gen">i5-10th Gen</option>
+                        <option value="i3-13th Gen">i3-13th Gen</option>
+                        <option value="i3-12th Gen">i3-12th Gen</option>
+                        <option value="i3-11th Gen">i3-11th Gen</option>
+                        <option value="i3-10th Gen">i3-10th Gen</option>
+                    </select>
+                </div>                
 
                   <!-- RAM Input -->
                   <div class="form-group">
                       <label for="ram">RAM:</label>
-                      <input type="text" class="form-control" id="ram" placeholder="Enter RAM">
+                      <input type="number" class="form-control" id="ram" placeholder="Enter RAM">
                   </div>
 
                   <!-- Cores Input -->
@@ -251,6 +295,7 @@
                   <div class="form-group">
                       <label for="os">Operating System:</label>
                       <select class="form-control" id="os">
+                          <option value="" disabled selected>Select OS</option>
                           <option value="windows">Windows</option>
                           <option value="mac">Mac</option>
                           <option value="linux">Linux</option>
