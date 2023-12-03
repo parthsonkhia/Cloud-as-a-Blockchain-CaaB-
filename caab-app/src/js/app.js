@@ -1,7 +1,8 @@
+
 App = {
   web3: null,
   contracts: {},
-  cabaddress: "0x78542f1690ee51F60eB7E0425C9075A4Be54d0f2",
+  cabaddress: "0x6b04d0cA21f79b7F3B6a74b76047b67390cf5285",
   names: new Array(),
   url: "http://127.0.0.1:8545",
   chairPerson: null,
@@ -139,6 +140,100 @@ App = {
       toastr.error(App.getErrorMessage(err), "Reverted!");
     }
   },
+  handleFileSelect(configData){
+
+
+    console.log(response)
+    return response
+    // Display the file name
+
+  },
+  uuid() {
+    return ('10000000-1000-4000-8000-100000000000').replace(/[018]/g, c => (
+        c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+    );
+  },
+  pinFileToIPFS(src, configData) {
+    const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1ZDUzNDU2Mi0xZDM4LTQzZDQtYjY2Mi03ZmIwYmNmMmZiMjEiLCJlbWFpbCI6InBzb25raGlhQGJ1ZmZhbG8uZWR1IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImVjNTM1ZWJiMWMwM2JiOGMxMTUwIiwic2NvcGVkS2V5U2VjcmV0IjoiNDdiOWYzYjVkYTY5NDM2M2VhNmFlMWQyMDEzZTcwYTEzNzAyZjc5YWI3ZDdkZmI0NWNkMjk3MWQ2ZWZjN2MwZCIsImlhdCI6MTcwMTQ3MzQwNn0.DJfvrp7IeAYP5jc3XbFxkTxL0vgzH4FGXNQFWim_CT4'
+
+    const formData = new FormData();
+    formData.append('file', src)
+    const pinataMetadata = JSON.stringify({
+      name: crypto.randomUUID(),
+    });
+    formData.append('pinataMetadata', pinataMetadata);
+
+    const pinataOptions = JSON.stringify({
+      cidVersion: 0,
+    })
+    formData.append('pinataOptions', pinataOptions);
+
+    try{
+      const res = axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+        maxBodyLength: "Infinity",
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+          'Authorization': `Bearer ${JWT}`
+        }
+      }).then(res=>{
+        console.log(res.data);
+        //Create json file with response
+        var json = {
+          "name": res.data.IpfsHash,
+            "description": "This is just a test",
+            "image": "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash,
+            "dna": "01",
+            "edition": 1,
+            "date": 1672523652840,
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": JSON.stringify(configData)
+              }
+            },
+            "attributes": [
+                  {
+                    "trait_type": "test_image_1",
+                    "value": "test_1"
+                  }
+              ]
+        }
+        var jsonstr = JSON.stringify(json);
+        var blob = new Blob([jsonstr], {type: "application/json"});
+
+        const formData = new FormData();
+        formData.append('file', blob)
+        const pinataMetadata = JSON.stringify({
+          name: crypto.randomUUID()+".json",
+        });
+        formData.append('pinataMetadata', pinataMetadata);
+
+        const pinataOptions = JSON.stringify({
+          cidVersion: 0,
+        })
+        formData.append('pinataOptions', pinataOptions);
+
+        const res1 = axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+          maxBodyLength: "Infinity",
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            'Authorization': `Bearer ${JWT}`
+          }
+        }).then(res=>{
+            console.log("returning file link");
+            console.log("https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash);
+            return "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash;
+        })
+        // var url  = URL.createObjectURL(blob);
+
+
+      });
+      // console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   createCard(data) {
     var card = document.createElement('div');
     card.className = 'col-md-4';
@@ -171,7 +266,7 @@ App = {
     card.innerHTML = cardContent;
     return card;
   },
-  handleBuyCCT() {
+  handleBuyCCT : async function() {
     console.log("buy CCT")
     var form = document.getElementById('buyCCTForm');
 
@@ -182,32 +277,119 @@ App = {
     var cores = form.elements['cores'].value;
     var os = form.elements['os'].value;
     var image = form.elements['image'].value;
-
     // Create an object with the form data
-    var formData = {
-      gpu: gpu,
-      processor: processor,
-      ram: ram,
-      cores: cores,
-      os: os,
-      image: image
-    };
-    var option = { from: App.handler };
-    App.contracts.CAB.methods.buyCCT(...Object.values(formData))
-        .send(option)
-        .on("receipt", (receipt) => {
-          console.log(receipt)
-          toastr.success("Transaction Successful: " + App.handler + ".");
-        })
-        .on("error", (err) => {
-          console.log(err)
-          toastr.error(err, "Reverted!");
-        }).then((result) => {
-          toastr.success("Transaction Successful for: " + App.handler + ".");
+
+    var input = document.getElementById('image');
+    var file = input.files[0];
+    // var response = App.pinFileToIPFS(file, formData);
+
+    const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1ZDUzNDU2Mi0xZDM4LTQzZDQtYjY2Mi03ZmIwYmNmMmZiMjEiLCJlbWFpbCI6InBzb25raGlhQGJ1ZmZhbG8uZWR1IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImVjNTM1ZWJiMWMwM2JiOGMxMTUwIiwic2NvcGVkS2V5U2VjcmV0IjoiNDdiOWYzYjVkYTY5NDM2M2VhNmFlMWQyMDEzZTcwYTEzNzAyZjc5YWI3ZDdkZmI0NWNkMjk3MWQ2ZWZjN2MwZCIsImlhdCI6MTcwMTQ3MzQwNn0.DJfvrp7IeAYP5jc3XbFxkTxL0vgzH4FGXNQFWim_CT4'
+
+    const formData1 = new FormData();
+    formData1.append('file', file)
+    const pinataMetadata = JSON.stringify({
+      name: crypto.randomUUID(),
+    });
+    formData1.append('pinataMetadata', pinataMetadata);
+
+    const pinataOptions = JSON.stringify({
+      cidVersion: 0,
+    })
+    formData1.append('pinataOptions', pinataOptions);
+
+    try{
+      const res = axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData1, {
+        maxBodyLength: "Infinity",
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${formData1._boundary}`,
+          'Authorization': `Bearer ${JWT}`
+        }
+      }).then(res=>{
+        console.log(res.data);
+        var imageUrl = "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash;
+        //Create json file with response
+        var json = {
+          "name": res.data.IpfsHash,
+          "description": "This is just a test",
+          "image": "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash,
+          "dna": "01",
+          "edition": 1,
+          "date": 1672523652840,
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": JSON.stringify({
+                gpu: gpu,
+                processor: processor,
+                ram: ram,
+                cores: cores,
+                os: os})
+            }
+          },
+          "attributes": [
+            {
+              "trait_type": "test_image_1",
+              "value": "test_1"
+            }
+          ]
+        }
+        var jsonstr = JSON.stringify(json);
+        var blob = new Blob([jsonstr], {type: "application/json"});
+
+        const formData2 = new FormData();
+        formData2.append('file', blob)
+        const pinataMetadata = JSON.stringify({
+          name: crypto.randomUUID()+".json",
         });
+        formData2.append('pinataMetadata', pinataMetadata);
+
+        const pinataOptions = JSON.stringify({
+          cidVersion: 0,
+        })
+        formData2.append('pinataOptions', pinataOptions);
+
+        const res1 = axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData2, {
+          maxBodyLength: "Infinity",
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${formData2._boundary}`,
+            'Authorization': `Bearer ${JWT}`
+          }
+        }).then(res=>{
+          console.log("returning file link");
+          console.log("https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash);
+          var formData = {
+            gpu: gpu,
+            processor: processor,
+            ram: ram,
+            cores: cores,
+            os: os,
+            image: imageUrl,
+            uri: "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash
+          };
+          var option = { from: App.handler };
+          App.contracts.CAB.methods.buyCCT(...Object.values(formData))
+              .send(option)
+              .on("receipt", (receipt) => {
+                console.log(receipt)
+                toastr.success("Transaction Successful: " + App.handler + ".");
+              })
+              .on("error", (err) => {
+                console.log(err)
+                toastr.error(err, "Reverted!");
+              }).then((result) => {
+            toastr.success("Transaction Successful for: " + App.handler + ".");
+          });
+          // return "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash;
+        })
+
+
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
 
     // Log the form data to the console (you can do something else with it)
-    console.log(formData);
   },
   handleRent() {
     var option = { from: App.handler };
