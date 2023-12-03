@@ -57,6 +57,7 @@ contract CloudAsABlockchainToken is ERC1155 {
         cstToken = CloudStoragetoken(cstTokenAddress);
         cctToken = CloudConfigToken(cctTokenAddress);
         owner = msg.sender;
+        _mint(msg.sender,CST_ERC20_Token,1000000*(10 ** 18), "");
     }
 
     // function setURI(string memory newURI) external {
