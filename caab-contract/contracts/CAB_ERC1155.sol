@@ -97,7 +97,7 @@ contract CloudAsABlockchainToken is ERC1155 {
         emit rentalSuccess("The user has successfully rented server and disk space.");
     }
 
-    function getBalance() public view returns (
+    function getBalance(address user) public view returns (
         uint256 cst_balance,
         uint256 cct_balance
     )
@@ -106,8 +106,8 @@ contract CloudAsABlockchainToken is ERC1155 {
         ids[0] = CST_ERC20_Token;
         ids[1] = CCT_ERC721_Token;
         address[] memory add = new address[](2);
-        add[0] = msg.sender;
-        add[1] = msg.sender;
+        add[0] = user;
+        add[1] = user;
         uint256[] memory test = balanceOfBatch(add, ids);
         cst_balance = test[0];
         cct_balance = test[1];
