@@ -2,7 +2,7 @@
 App = {
   web3: null,
   contracts: {},
-  cabaddress: "0x6b04d0cA21f79b7F3B6a74b76047b67390cf5285",
+  cabaddress: "0x8df99C031467A95Aa86d44Cb4b62468ae5b28baF",
   names: new Array(),
   url: "http://127.0.0.1:8545",
   chairPerson: null,
@@ -32,7 +32,7 @@ App = {
        console.log(data)
       App.contracts.CAB = new App.web3.eth.Contract(data.abi, App.cabaddress, {});
       console.log("CAB contract loaded");
-      App.listenToEvents();
+      // App.listenToEvents();
       return App.bindEvents();
 
     });
@@ -78,17 +78,19 @@ App = {
   handleCSTBalance: function () {
     console.log("handleCSTBalance")
     var option = { from: App.handler };
-    App.contracts.CAB.methods.getCSTBalance(App.handler)
+    App.contracts.CAB.methods.getBalance(App.handler)
         // .then((error,data)=>{console.log(data);})
-        .call((error, balance) => {
-          if (!error) {
-            document.getElementById("currentCSTBalance").innerText =
-                balance;
-            console.log(`Balance of ${App.handler}: ${balance}`);
-          } else {
-            console.error(error);
-          }}
-        );
+        .call().then(data=>{document.getElementById("currentCSTBalance").innerText =
+        data.cst_balance;})
+          // if (!error) {
+          //   console.log("Balance is")
+          //   console.log(balance)
+
+          //   console.log(`Balance of ${App.handler}: ${balance}`);
+          // } else {
+          //   console.error(error);
+          // }}
+        // );
       // .on("receipt", (receipt) => {
       //   toastr.success("Success! Address: " + App.handler + " has been registered.");
       // })

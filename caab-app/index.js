@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+
 app.use(express.static('src'));
 app.use(express.static('../caab-contract/build/contracts'));
 app.get('/', function (req, res) {
