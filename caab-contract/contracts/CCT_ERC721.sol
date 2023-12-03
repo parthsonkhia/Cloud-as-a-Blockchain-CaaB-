@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 contract CloudConfigToken is ERC721URIStorage {
     // To store the address of the owner of the contract
     address owner;
-    uint256 tokenID = 1;
+    uint256 public tokenID = 1;
     // To store server configurations and map it to a particular ID for the NFT.
     struct ServerConfiguration {
         uint256 id;
@@ -37,6 +37,13 @@ contract CloudConfigToken is ERC721URIStorage {
         owner = msg.sender;
     }
 
+    function getTokenId() public view returns (
+        uint256 t
+    )
+    {
+        t=tokenID;
+    }
+
     function mintConfigToken(
         address user,
         string memory gpu,
@@ -44,17 +51,23 @@ contract CloudConfigToken is ERC721URIStorage {
         string memory ram,
         string memory cores,
         string memory os,
-        string memory imageURL
-    ) external userNotCaller(user,msg.sender) {
+        string memory imageURL,
+        string memory uri 
+    ) public returns (
+        uint256 token
+    ) {
         _mint(user, tokenID);
-        _setTokenURI(tokenID, "");
+        _setTokenURI(tokenID, uri);
+        // _setTokenURI(tokenID, uri);
 
         serverConfigs[tokenID] = ServerConfiguration(tokenID, gpu, processor, ram, cores, os, imageURL);
         tokenToCost[tokenID] = 1;
         tokenList[user].push(tokenID);
+        token=tokenID;
         tokenID++;
         // setApprovalForAll(operator, true);
         emit NFTminted("Minted NFT successfully for the user.");
+
     }
 
     function getConfigData(uint256 tokenId) public view returns (

@@ -8,6 +8,8 @@ import "./CST_ERC20.sol";
 contract CloudAsABlockchainToken is ERC1155 {
     CloudStoragetoken private cstToken;
     CloudConfigToken private cctToken;
+    uint256 public constant CST_ERC20_Token = 0;
+    uint256 public constant CCT_ERC721_Token = 1;
     struct Data {
         uint256 cstAmount;
         uint256 cctTokenID;
@@ -61,6 +63,19 @@ contract CloudAsABlockchainToken is ERC1155 {
     //     _setURI(newURI);
     // }
 
+    function transferinBatch(uint256 cctTokenID, uint256 cstAmount) public tokenAvailable(msg.sender,cstAmount) NFTOwnership(msg.sender,cctTokenID) 
+    {
+        uint256[] memory ids = new uint256[](2);
+        ids[0] = CST_ERC20_Token;
+        ids[1] = CCT_ERC721_Token;
+        uint256[] memory amounts = new uint256[](2);
+        amounts[0] = cstAmount*(10**18);
+        amounts[1] = cctTokenID;
+        // uint256[] string amounts = [cstAmount*(10 ** 18),cctTokenID];
+        safeBatchTransferFrom(msg.sender,owner,ids,amounts,"");
+    }
+
+
     function rentCloudDiskandServer(uint256 cctTokenID, uint256 cstAmount) external tokenAvailable(msg.sender,cstAmount) NFTOwnership(msg.sender,cctTokenID) 
     {    
         // Transfer ERC20 tokens from the sender to the contract
@@ -73,11 +88,28 @@ contract CloudAsABlockchainToken is ERC1155 {
         cctToken.transferOwnership(msg.sender, owner, cctTokenID);
         
         // Mint ERC1155 tokens to the sender
-        _mint(msg.sender, tokenID, 1, "");
+        // _mint(msg.sender, tokenID, 1, "");
+        transferinBatch(cctTokenID,cstAmount);
         rentalIDs[msg.sender].push(tokenID);
         rentalDetails[tokenID] = Data(cstAmount,cctTokenID);
         tokenID++;
         emit rentalSuccess("The user has successfully rented server and disk space.");
+    }
+
+    function getBalance() public view returns (
+        uint256 cst_balance,
+        uint256 cct_balance
+    )
+    {
+        uint256[] memory ids = new uint256[](2);
+        ids[0] = CST_ERC20_Token;
+        ids[1] = CCT_ERC721_Token;
+        address[] memory add = new address[](2);
+        add[0] = msg.sender;
+        add[1] = msg.sender;
+        uint256[] memory test = balanceOfBatch(add, ids);
+        cst_balance = test[0];
+        cct_balance = test[1];
     }
 
     // function transferTokensToSomeone(address toaddress, uint256 cctTokenID, uint256 cstAmount) external {
@@ -120,16 +152,9 @@ contract CloudAsABlockchainToken is ERC1155 {
 
     function buyCST(uint256 amount) external  {
         cstToken.buyToken(amount*(10 ** 18), msg.sender);
+        _mint(msg.sender,CST_ERC20_Token,amount*(10 ** 18), "");
+
     }
-    event PurchaseReceipt(
-        address indexed buyer,
-        string gpu,
-        string processor,
-        string ram,
-        string cores,
-        string os,
-        string imageURL
-    );
 
     function buyCCT(
         string memory gpu,
@@ -137,18 +162,11 @@ contract CloudAsABlockchainToken is ERC1155 {
         string memory ram,
         string memory cores,
         string memory os,
-        string memory imageURL
+        string memory imageURL,
+        string memory uri
     ) external {
-        cctToken.mintConfigToken(msg.sender,gpu, processor, ram, cores, os, imageURL);
-        emit PurchaseReceipt(
-            msg.sender,
-            gpu,
-            processor,
-            ram,
-            cores,
-            os,
-            imageURL
-        );
+        uint256 token = cctToken.mintConfigToken(msg.sender,gpu, processor, ram, cores, os, imageURL,uri);
+        _mint(msg.sender,CCT_ERC721_Token,token,"");
     }
 
     function getRentalDetails(address user) public view returns (
