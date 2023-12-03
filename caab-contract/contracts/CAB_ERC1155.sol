@@ -110,6 +110,7 @@ contract CloudAsABlockchainToken is ERC1155 {
         add[1] = user;
         uint256[] memory test = balanceOfBatch(add, ids);
         cst_balance = test[0];
+        cst_balance /= (10 ** 18);
         cct_balance = test[1];
     }
 
