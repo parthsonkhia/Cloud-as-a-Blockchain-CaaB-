@@ -64,7 +64,7 @@ contract CloudAsABlockchainToken is ERC1155 {
     //     _setURI(newURI);
     // }
 
-    function transferinBatch(uint256 cctTokenID, uint256 cstAmount) public tokenAvailable(msg.sender,cstAmount) NFTOwnership(msg.sender,cctTokenID) 
+    function transferinBatch(uint256 cctTokenID, uint256 cstAmount) public tokenAvailable(msg.sender,cstAmount) 
     {
         uint256[] memory ids = new uint256[](2);
         ids[0] = CST_ERC20_Token;
@@ -77,7 +77,7 @@ contract CloudAsABlockchainToken is ERC1155 {
     }
 
 
-    function rentCloudDiskandServer(uint256 cctTokenID, uint256 cstAmount) external tokenAvailable(msg.sender,cstAmount) NFTOwnership(msg.sender,cctTokenID) 
+    function rentCloudDiskandServer(uint256 cctTokenID, uint256 cstAmount) external tokenAvailable(msg.sender,cstAmount) 
     {    
         // Transfer ERC20 tokens from the sender to the contract
         cstToken.transferCSTToken(msg.sender, owner, cstAmount*(10 ** 18));
@@ -110,7 +110,6 @@ contract CloudAsABlockchainToken is ERC1155 {
         add[1] = user;
         uint256[] memory test = balanceOfBatch(add, ids);
         cst_balance = test[0];
-        cst_balance /= (10 ** 18);
         cct_balance = test[1];
     }
 
