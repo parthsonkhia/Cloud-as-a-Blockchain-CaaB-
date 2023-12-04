@@ -17,7 +17,11 @@ App = {
     if (typeof web3 !== "undefined") {
       App.web3 = new Web3(Web3.givenProvider);
     } else {
-      App.web3 = new Web3(App.url);
+      App.web3 = new Web3(
+          new Web3.providers.HttpProvider(
+              `https://${network}.infura.io/v3/${process.env.INFURA_API_KEY}`,
+          )
+      );
     }
     // App.web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
     ethereum.request({ method: "eth_requestAccounts" });
@@ -28,8 +32,8 @@ App = {
   },
 
   initContract: function () {
-     $.getJSON("../abis/CloudAsABlockchainToken.json", function (data) {
-       console.log(data)
+    $.getJSON("../abis/CloudAsABlockchainToken.json", function (data) {
+      console.log(data)
       App.contracts.CAB = new App.web3.eth.Contract(data.abi, App.cabaddress, {});
       console.log("CAB contract loaded");
       // App.listenToEvents();
@@ -71,7 +75,7 @@ App = {
     const userAccounts = await App.web3.eth.getAccounts();
     App.handler = userAccounts[0];
     document.getElementById("currentUserAddress").innerText =
-          "Current User Address: " + App.handler;
+        "Current User Address: " + App.handler;
   },
 
 
@@ -82,21 +86,21 @@ App = {
         // .then((error,data)=>{console.log(data);})
         .call().then(data=>{document.getElementById("currentCSTBalance").innerText =
         data.cst_balance;})
-          // if (!error) {
-          //   console.log("Balance is")
-          //   console.log(balance)
+    // if (!error) {
+    //   console.log("Balance is")
+    //   console.log(balance)
 
-          //   console.log(`Balance of ${App.handler}: ${balance}`);
-          // } else {
-          //   console.error(error);
-          // }}
-        // );
-      // .on("receipt", (receipt) => {
-      //   toastr.success("Success! Address: " + App.handler + " has been registered.");
-      // })
-      // .on("error", (err) => {
-      //   toastr.error(App.getErrorMessage(err), "Reverted!");
-      // });
+    //   console.log(`Balance of ${App.handler}: ${balance}`);
+    // } else {
+    //   console.error(error);
+    // }}
+    // );
+    // .on("receipt", (receipt) => {
+    //   toastr.success("Success! Address: " + App.handler + " has been registered.");
+    // })
+    // .on("error", (err) => {
+    //   toastr.error(App.getErrorMessage(err), "Reverted!");
+    // });
   },
   handleCCTBalance: function () {
     App.contracts.CCT.methods.balanceOf(App.handler).call((error, balance) => {
@@ -126,17 +130,17 @@ App = {
     console.log(typeof(parseInt(document.getElementById('cstquantity').value)))
     var option = { from: App.handler };
     try{
-    App.contracts.CAB.methods.buyCST(parseInt(document.getElementById('cstquantity').value))
-        .send(option)
-        .on("receipt", (receipt) => {
-          toastr.success("Transaction Successful: " + App.handler + ".");
-        })
-        .on("error", (err) => {
-          toastr.error(App.getErrorMessage(err), "Reverted!");
-        }).then((result) => {
-      // This block will be executed after the transaction is successful
-      // toastr.success("Transaction Successful for: " + App.handler + ".");
-    });
+      App.contracts.CAB.methods.buyCST(parseInt(document.getElementById('cstquantity').value))
+          .send(option)
+          .on("receipt", (receipt) => {
+            toastr.success("Transaction Successful: " + App.handler + ".");
+          })
+          .on("error", (err) => {
+            toastr.error(App.getErrorMessage(err), "Reverted!");
+          }).then((result) => {
+        // This block will be executed after the transaction is successful
+        // toastr.success("Transaction Successful for: " + App.handler + ".");
+      });
 
     }catch(err){
       toastr.error(App.getErrorMessage(err), "Reverted!");
@@ -150,10 +154,16 @@ App = {
     // Display the file name
 
   },
-  uuid() {
-    return ('10000000-1000-4000-8000-100000000000').replace(/[018]/g, c => (
-        c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
-    );
+  generateRandomSequence(length, minValue, maxValue) {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let randomString = '';
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomString += characters.charAt(randomIndex);
+    }
+
+    return randomString;
   },
   pinFileToIPFS(src, configData) {
     const JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1ZDUzNDU2Mi0xZDM4LTQzZDQtYjY2Mi03ZmIwYmNmMmZiMjEiLCJlbWFpbCI6InBzb25raGlhQGJ1ZmZhbG8uZWR1IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImVjNTM1ZWJiMWMwM2JiOGMxMTUwIiwic2NvcGVkS2V5U2VjcmV0IjoiNDdiOWYzYjVkYTY5NDM2M2VhNmFlMWQyMDEzZTcwYTEzNzAyZjc5YWI3ZDdkZmI0NWNkMjk3MWQ2ZWZjN2MwZCIsImlhdCI6MTcwMTQ3MzQwNn0.DJfvrp7IeAYP5jc3XbFxkTxL0vgzH4FGXNQFWim_CT4'
@@ -161,7 +171,7 @@ App = {
     const formData = new FormData();
     formData.append('file', src)
     const pinataMetadata = JSON.stringify({
-      name: crypto.randomUUID(),
+      name: App.generateRandomSequence(10, 1,10),
     });
     formData.append('pinataMetadata', pinataMetadata);
 
@@ -182,23 +192,23 @@ App = {
         //Create json file with response
         var json = {
           "name": res.data.IpfsHash,
-            "description": "This is just a test",
-            "image": "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash,
-            "dna": "01",
-            "edition": 1,
-            "date": 1672523652840,
-            "properties": {
-              "description": {
-                "type": "string",
-                "description": JSON.stringify(configData)
-              }
-            },
-            "attributes": [
-                  {
-                    "trait_type": "test_image_1",
-                    "value": "test_1"
-                  }
-              ]
+          "description": "This is just a test",
+          "image": "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash,
+          "dna": "01",
+          "edition": 1,
+          "date": 1672523652840,
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": JSON.stringify(configData)
+            }
+          },
+          "attributes": [
+            {
+              "trait_type": "test_image_1",
+              "value": "test_1"
+            }
+          ]
         }
         var jsonstr = JSON.stringify(json);
         var blob = new Blob([jsonstr], {type: "application/json"});
@@ -206,7 +216,7 @@ App = {
         const formData = new FormData();
         formData.append('file', blob)
         const pinataMetadata = JSON.stringify({
-          name: crypto.randomUUID()+".json",
+          name: App.generateRandomSequence(10, 1,10)+".json",
         });
         formData.append('pinataMetadata', pinataMetadata);
 
@@ -222,9 +232,9 @@ App = {
             'Authorization': `Bearer ${JWT}`
           }
         }).then(res=>{
-            console.log("returning file link");
-            console.log("https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash);
-            return "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash;
+          console.log("returning file link");
+          console.log("https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash);
+          return "https://scarlet-tiny-penguin-197.mypinata.cloud/ipfs/"+res.data.IpfsHash;
         })
         // var url  = URL.createObjectURL(blob);
 
@@ -290,7 +300,7 @@ App = {
     const formData1 = new FormData();
     formData1.append('file', file)
     const pinataMetadata = JSON.stringify({
-      name: crypto.randomUUID(),
+      name: App.generateRandomSequence(10,1,10),
     });
     formData1.append('pinataMetadata', pinataMetadata);
 
@@ -341,7 +351,7 @@ App = {
         const formData2 = new FormData();
         formData2.append('file', blob)
         const pinataMetadata = JSON.stringify({
-          name: crypto.randomUUID()+".json",
+          name: App.generateRandomSequence(10,1,10)+".json",
         });
         formData2.append('pinataMetadata', pinataMetadata);
 
@@ -419,18 +429,18 @@ App = {
           tableBody.innerHTML = "";
           for (let i = 0; i < data.length; i++) {
             App.contracts.CAB.methods.getTokenDetails(data[i].cctTokenID).call()
-              .then((data1) => {
-                console.log(data1);
-                var row = tableBody.insertRow();
-                row.innerHTML = "<td>" + (i+1) + "</td><td>" + (data[i].cstAmount*5) + "GB</td><td>" + data1.gpu + "</td><td>" + data1.processor + "</td><td>" + data1.ram + "</td><td>" + data1.cores + "</td><td>" + data1.os + "</td>";
-              });
+                .then((data1) => {
+                  console.log(data1);
+                  var row = tableBody.insertRow();
+                  row.innerHTML = "<td>" + (i+1) + "</td><td>" + (data[i].cstAmount*5) + "GB</td><td>" + data1.gpu + "</td><td>" + data1.processor + "</td><td>" + data1.ram + "</td><td>" + data1.cores + "</td><td>" + data1.os + "</td>";
+                });
           }
         })
 
 
-        // .on("receipt", (receipt) => {
-      // toastr.success("Success! Address: " + App.handler + " has been registered.");
-      // console.log(receipt)
+    // .on("receipt", (receipt) => {
+    // toastr.success("Success! Address: " + App.handler + " has been registered.");
+    // console.log(receipt)
     // }).on("error", (err) => {
     //       toastr.error(App.getErrorMessage(err), "Reverted!");
     //     });
